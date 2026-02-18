@@ -1,12 +1,18 @@
 :root {
-    --bg-color: #0f172a;
-    --text-color: #f8fafc;
-    --text-muted: #94a3b8;
-    --primary: #38bdf8;
-    --secondary: #818cf8;
-    --accent: #c084fc;
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --bg-color: #022c22;
+    /* Dark Emerald */
+    --text-color: #ecfdf5;
+    /* Very light mint/white */
+    --text-muted: #6ee7b7;
+    /* Muted emerald */
+    --primary: #10b981;
+    /* Emerald 500 */
+    --secondary: #34d399;
+    /* Emerald 400 */
+    --accent: #a7f3d0;
+    /* Emerald 200 */
+    --glass-bg: rgba(16, 185, 129, 0.05);
+    --glass-border: rgba(16, 185, 129, 0.1);
     --font-main: 'Outfit', sans-serif;
 }
 
@@ -39,8 +45,13 @@ body {
 }
 
 @keyframes float {
-    0% { transform: translate(0, 0); }
-    100% { transform: translate(-50px, 50px); }
+    0% {
+        transform: translate(0, 0);
+    }
+
+    100% {
+        transform: translate(-50px, 50px);
+    }
 }
 
 /* Navbar */
@@ -214,6 +225,7 @@ body {
     justify-content: center;
     color: var(--text-muted);
 }
+
 .project-image::after {
     content: "Image Placeholder";
     font-size: 0.8rem;
@@ -271,8 +283,13 @@ footer {
     animation: fadeIn 0.8s forwards;
 }
 
-.delay-1 { animation-delay: 0.2s; }
-.delay-2 { animation-delay: 0.4s; }
+.delay-1 {
+    animation-delay: 0.2s;
+}
+
+.delay-2 {
+    animation-delay: 0.4s;
+}
 
 @keyframes fadeIn {
     to {
@@ -283,7 +300,18 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
-    .hero h1 { font-size: 2.5rem; }
-    .nav-links { display: none; } /* Mobile menu implementation deferred for simplicity */
-    .btn { width: 100%; margin: 0.5rem 0 0 0; text-align: center; }
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .nav-links {
+        display: none;
+    }
+
+    /* Mobile menu implementation deferred for simplicity */
+    .btn {
+        width: 100%;
+        margin: 0.5rem 0 0 0;
+        text-align: center;
+    }
 }
