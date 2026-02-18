@@ -98,7 +98,18 @@ const airplaneWords = [
     { word: "Customs Declaration", meaning: "세관 신고서" },
     { word: "Baggage Claim", meaning: "수하물 찾는 곳" },
     { word: "Transfer", meaning: "환승" },
-    { word: "Flight Attendant", meaning: "승무원" }
+    { word: "Flight Attendant", meaning: "승무원" },
+    // Dialogues
+    { word: "Excuse me, can I get a blanket?", meaning: "저기요, 담요 좀 주시겠어요?" },
+    { word: "How long until we land?", meaning: "도착까지 얼마나 남았나요?" },
+    { word: "I have a connecting flight.", meaning: "저는 환승 비행기가 있습니다." },
+    { word: "Can I have some water?", meaning: "물 좀 주시겠어요?" },
+    { word: "My screen is not working.", meaning: "제 화면이 작동하지 않습니다." },
+    { word: "Where is the baggage claim?", meaning: "수하물 찾는 곳이 어디인가요?" },
+    { word: "Do you have an arrival card?", meaning: "입국 신고서 있나요?" },
+    { word: "Putting my seat back ok?", meaning: "의자를 뒤로 젖혀도 될까요?" },
+    { word: "I feel airsick.", meaning: "비행기 멀미가 나요." },
+    { word: "Thank you for your service.", meaning: "서비스 감사합니다." }
 ];
 
 // Load words from LocalStorage on startup
