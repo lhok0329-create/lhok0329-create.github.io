@@ -77,17 +77,75 @@ const basicWords = [
     { word: "Bed", meaning: "침대" }, { word: "Before", meaning: "전에" }
 ];
 
+// Airplane Conversation Data
+const airplaneWords = [
+    { word: "Boarding Pass", meaning: "탑승권" },
+    { word: "Passport", meaning: "여권" },
+    { word: "Aisle Seat", meaning: "통로 쪽 좌석" },
+    { word: "Window Seat", meaning: "창가 쪽 좌석" },
+    { word: "Overhead Bin", meaning: "머리 위 짐칸" },
+    { word: "Fasten Seatbelt", meaning: "안전벨트 착용" },
+    { word: "Take off", meaning: "이륙하다" },
+    { word: "Land", meaning: "착륙하다" },
+    { word: "Turbulence", meaning: "난기류 (흔들림)" },
+    { word: "In-flight Meal", meaning: "기내식" },
+    { word: "Chicken or Beef?", meaning: "치킨과 소고기 중 어떤 걸로?" },
+    { word: "Blanket", meaning: "담요" },
+    { word: "Pillow", meaning: "베개" },
+    { word: "Headphones", meaning: "헤드폰" },
+    { word: "Water, please.", meaning: "물 좀 주세요." },
+    { word: "Restroom / Lavatory", meaning: "화장실" },
+    { word: "Customs Declaration", meaning: "세관 신고서" },
+    { word: "Baggage Claim", meaning: "수하물 찾는 곳" },
+    { word: "Transfer", meaning: "환승" },
+    { word: "Flight Attendant", meaning: "승무원" }
+];
+
 // Load words from LocalStorage on startup
 let vocabList = JSON.parse(localStorage.getItem('myVocab'));
+let currentFilter = 'all';
 
-// Initialize with basic words if empty
+// Initialize or Migrate Data
 if (!vocabList || vocabList.length === 0) {
-    vocabList = basicWords.map((item, index) => ({
-        id: Date.now() + index, // Unique ID generation
-        word: item.word,
-        meaning: item.meaning
-    }));
-    localStorage.setItem('myVocab', JSON.stringify(vocabList));
+    // Initial Fresh Load
+    vocabList = [
+        ...basicWords.map((item, i) => ({ id: Date.now() + i, word: item.word, meaning: item.meaning, category: 'basic' })),
+        ...airplaneWords.map((item, i) => ({ id: Date.now() + 1000 + i, word: item.word, meaning: item.meaning, category: 'airplane' }))
+    ];
+    saveAndRender();
+} else {
+    // Data Migration: Assign categories to existing data if missing
+    let hasChanges = false;
+
+    // Check if we need to add airplane words (if safe to assume they are missing)
+    // Simple check: does any item have category 'airplane'?
+    const hasAirplane = vocabList.some(item => item.category === 'airplane');
+
+    vocabList = vocabList.map(item => {
+        if (!item.category) {
+            hasChanges = true;
+            // Guess category logic simple: default to basic or user
+            // For simplicity in this upgrade, let's mark all untagged as 'user' usually, 
+            // BUT since we just added basic words, they likely have no tag.
+            // Let's matching against basicWords to recover 'basic' tag
+            const isBasic = basicWords.some(bw => bw.word === item.word);
+            return { ...item, category: isBasic ? 'basic' : 'user' };
+        }
+        return item;
+    });
+
+    if (!hasAirplane) {
+        const newAirplane = airplaneWords.map((item, i) => ({
+            id: Date.now() + 2000 + i,
+            word: item.word,
+            meaning: item.meaning,
+            category: 'airplane'
+        }));
+        vocabList = [...vocabList, ...newAirplane];
+        hasChanges = true;
+    }
+
+    if (hasChanges) saveAndRender();
 }
 
 renderVocab();
@@ -99,7 +157,8 @@ vocabForm.addEventListener('submit', (e) => {
     const newWord = {
         id: Date.now(),
         word: wordInput.value.trim(),
-        meaning: meaningInput.value.trim()
+        meaning: meaningInput.value.trim(),
+        category: 'user'
     };
 
     if (newWord.word && newWord.meaning) {
@@ -107,33 +166,61 @@ vocabForm.addEventListener('submit', (e) => {
         saveAndRender();
         vocabForm.reset();
         wordInput.focus();
+        // Switch to 'My Words' or 'All' to see the new word
+        filterVocab('user');
     }
 });
+
+// Filter Function
+window.filterVocab = function (category) {
+    currentFilter = category;
+
+    // Update buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        if (btn.getAttribute('onclick').includes(category)) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    renderVocab();
+}
 
 // Render the vocabulary grid
 function renderVocab() {
     vocabGrid.innerHTML = '';
 
+    // Filter List
+    let filteredList = vocabList;
+    if (currentFilter !== 'all') {
+        filteredList = vocabList.filter(item => item.category === currentFilter);
+    }
+
     // Add instruction card if empty
-    if (vocabList.length === 0) {
+    if (filteredList.length === 0) {
         vocabGrid.innerHTML = `
             <div class="vocab-card" style="grid-column: 1/-1; cursor: default;">
-                <p style="color: var(--text-muted);">단어를 추가해보세요!<br>카드를 클릭하면 뜻이 보입니다.</p>
+                <p style="color: var(--text-muted);">
+                    ${currentFilter === 'user' ? '직접 추가한 단어가 없습니다.' : '단어가 없습니다.'}
+                </p>
             </div>
         `;
         return;
     }
 
     // Sort by newest first
-    const sortedList = [...vocabList].reverse();
+    const sortedList = [...filteredList].reverse();
 
     sortedList.forEach(item => {
         const card = document.createElement('div');
         card.className = 'vocab-card glass';
+        // Add category indicator class if needed, or visual tag
         card.innerHTML = `
             <button class="delete-btn" onclick="deleteWord(${item.id})">&times;</button>
             <div class="vocab-word">${item.word}</div>
             <div class="vocab-meaning">${item.meaning}</div>
+            ${item.category === 'airplane' ? '<span style="position:absolute; bottom:10px; font-size:12px; opacity:0.5;">✈️</span>' : ''}
         `;
 
         // Toggle reveal on click

@@ -93,6 +93,13 @@
         <div class="container">
             <h2 class="section-title">English Vocabulary</h2>
 
+            <div class="vocab-filters">
+                <button class="filter-btn active" onclick="filterVocab('all')">All</button>
+                <button class="filter-btn" onclick="filterVocab('basic')">Basic</button>
+                <button class="filter-btn" onclick="filterVocab('airplane')">Airplane ✈️</button>
+                <button class="filter-btn" onclick="filterVocab('user')">My Words</button>
+            </div>
+
             <div class="vocab-input-box glass">
                 <form id="vocab-form">
                     <input type="text" id="word-input" placeholder="English Word" required>
